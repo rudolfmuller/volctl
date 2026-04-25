@@ -36,9 +36,8 @@ mod tests {
 
     #[test]
     fn it_works() -> Result<(), Box<dyn std::error::Error>> {
-        let audio = pipewire_audio::PipewireAudio {
-            id: AudioTarget::Default,
-        };
+        let audio = pipewire_audio::PipewireAudio::new().with_target(AudioTarget::Sink(34));
+
         if let Some(v) = audio.get_volume() {
             println!("volume: {} muted: {}", v.volume, v.muted);
         }
