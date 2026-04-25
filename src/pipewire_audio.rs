@@ -2,6 +2,19 @@ use crate::AudioTarget;
 use crate::VolumeState;
 use crate::lexer;
 use std::process::Command;
+use thiserror::Error;
+
+#[derive(Error, Debug)]
+pub enum PipewireError {
+    #[error("failed to execute wpctl: {0}")]
+    Io(#[from] std::io::Error),
+
+    #[error("wpctl failed with status code: {0:?}")]
+    Exit(Option<i32>),
+
+    #[error("invalid output: {0}")]
+    Utf8(String),
+}
 
 #[derive(Debug, Clone, Copy)]
 pub struct PipewireAudio {
