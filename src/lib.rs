@@ -12,7 +12,7 @@ pub struct VolumeState {
 #[derive(Debug, Clone, Copy)]
 pub enum AudioTarget {
     Default,
-    Sink(u16),
+    Sink(u32),
 }
 impl AudioTarget {
     pub fn as_wpctl(&self) -> Cow<'static, str> {
