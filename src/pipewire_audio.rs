@@ -42,4 +42,13 @@ impl PipewireAudio {
 
         Some(VolumeState { volume, muted })
     }
+    pub fn set_volume(&self, volume: f32) -> Result<(), PipewireError> {
+        let output = Command::new("wpctl")
+            .args(["set-volume", &self.target.as_wpctl(), &volume.to_string()])
+            .output()?;
+        if !output.status.success() {
+            return Err(PipewireError::Exit(output.status.code()));
+        }
+        Ok(())
+    }
 }

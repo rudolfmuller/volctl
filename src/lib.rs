@@ -38,7 +38,7 @@ mod tests {
     #[test]
     fn it_works() -> Result<(), PipewireError> {
         let audio = PipewireAudio::new().with_target(AudioTarget::Sink(34));
-
+        audio.set_volume(0.3)?;
         if let Some(v) = audio.get_volume() {
             println!("volume: {} muted: {}", v.volume, v.muted);
         }
