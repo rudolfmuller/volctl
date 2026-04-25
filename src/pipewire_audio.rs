@@ -1,12 +1,16 @@
+use crate::AudioTarget;
 use crate::VolumeState;
 use crate::lexer;
 use std::process::Command;
 
-pub struct PipewireAudio {}
+#[derive(Debug, Clone, Copy)]
+pub struct PipewireAudio {
+    pub id: AudioTarget,
+}
 impl PipewireAudio {
-    pub fn get_volume() -> Option<VolumeState> {
+    pub fn get_volume(&self) -> Option<VolumeState> {
         let output = Command::new("wpctl")
-            .args(["get-volume", "@DEFAULT_AUDIO_SINK@"])
+            .args(["get-volume", &self.id.as_wpctl()])
             .output()
             .ok()?;
         let utf8_lossy = String::from_utf8_lossy(&output.stdout);
