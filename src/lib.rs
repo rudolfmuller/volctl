@@ -29,6 +29,10 @@ impl AudioTarget {
     }
 }
 
+pub fn from_percent(percent: f32) -> f32 {
+    percent / 100.0
+}
+
 #[cfg(test)]
 mod tests {
 
@@ -38,7 +42,7 @@ mod tests {
     #[test]
     fn it_works() -> Result<(), PipewireError> {
         let audio = PipewireAudio::new().with_target(AudioTarget::Sink(34));
-        audio.set_volume(0.3)?;
+        audio.set_volume(from_percent(50.0))?;
         if let Some(v) = audio.get_volume() {
             println!("volume: {} muted: {}", v.volume, v.muted);
         }
