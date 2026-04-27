@@ -49,4 +49,26 @@ impl PipewireAudio {
         }
         Ok(())
     }
+
+    pub fn set_mute(&self, mute: bool) -> Result<(), AudioError> {
+        let output = Command::new(WPCTL_BIN)
+            .args([
+                "set-mute",
+                &self.target.as_wpctl(),
+                if mute { "1" } else { "0" },
+            ])
+            .output()
+            .map_err(|err| AudioError::Execute {
+                program: WPCTL_BIN,
+                err,
+            })?;
+        if !output.status.success() {
+            let ec = output.status.code();
+            return Err(AudioError::Exit {
+                program: WPCTL_BIN,
+                ec,
+            });
+        }
+        Ok(())
+    }
 }
