@@ -45,7 +45,7 @@ mod tests {
     fn it_works() -> Result<(), AudioError> {
         let audio = PipewireAudio::new().with_target(AudioTarget::Default);
         audio.set_volume(from_percent(50.0))?;
-        audio.set_mute(true);
+        audio.set_mute(true)?;
         if let Some(v) = audio.get_volume() {
             println!("volume: {} muted: {}", v.volume, v.muted);
         }
