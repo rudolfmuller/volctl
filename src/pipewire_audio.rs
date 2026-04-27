@@ -1,20 +1,10 @@
 use crate::AudioTarget;
 use crate::VolumeState;
+use crate::error::AudioError;
 use crate::lexer;
 use std::process::Command;
-use thiserror::Error;
 
-#[derive(Error, Debug)]
-pub enum PipewireError {
-    #[error("failed to execute wpctl: {0}")]
-    Io(#[from] std::io::Error),
-
-    #[error("wpctl failed with status code: {0:?}")]
-    Exit(Option<i32>),
-
-    #[error("invalid output: {0}")]
-    Utf8(String),
-}
+const WPCTL_BIN: &'static str = "wpctl";
 
 #[derive(Debug, Clone, Copy)]
 pub struct PipewireAudio {
@@ -31,23 +21,31 @@ impl PipewireAudio {
         self
     }
     pub fn get_volume(&self) -> Option<VolumeState> {
-        let output = Command::new("wpctl")
+        let output = Command::new(WPCTL_BIN)
             .args(["get-volume", &self.target.as_wpctl()])
             .output()
             .ok()?;
         let utf8_lossy = String::from_utf8_lossy(&output.stdout);
         let tokens = lexer::lex(&utf8_lossy);
         let volume: f32 = tokens.get(1)?.parse().ok()?;
-        let muted = if tokens.get(2).is_some() { true } else { false };
+        let muted = tokens.get(2).is_some();
 
         Some(VolumeState { volume, muted })
     }
-    pub fn set_volume(&self, volume: f32) -> Result<(), PipewireError> {
-        let output = Command::new("wpctl")
+    pub fn set_volume(&self, volume: f32) -> Result<(), AudioError> {
+        let output = Command::new(WPCTL_BIN)
             .args(["set-volume", &self.target.as_wpctl(), &volume.to_string()])
-            .output()?;
+            .output()
+            .map_err(|err| AudioError::Execute {
+                program: WPCTL_BIN,
+                err,
+            })?;
         if !output.status.success() {
-            return Err(PipewireError::Exit(output.status.code()));
+            let ec = output.status.code();
+            return Err(AudioError::Exit {
+                program: WPCTL_BIN,
+                ec,
+            });
         }
         Ok(())
     }

@@ -1,3 +1,4 @@
+mod error;
 mod lexer;
 mod pipewire_audio;
 mod pulse_audio;
@@ -37,11 +38,12 @@ pub fn from_percent(percent: f32) -> f32 {
 mod tests {
 
     use super::*;
-    use pipewire_audio::{PipewireAudio, PipewireError};
+    use error::AudioError;
+    use pipewire_audio::PipewireAudio;
 
     #[test]
-    fn it_works() -> Result<(), PipewireError> {
-        let audio = PipewireAudio::new().with_target(AudioTarget::Sink(34));
+    fn it_works() -> Result<(), AudioError> {
+        let audio = PipewireAudio::new().with_target(AudioTarget::Default);
         audio.set_volume(from_percent(50.0))?;
         if let Some(v) = audio.get_volume() {
             println!("volume: {} muted: {}", v.volume, v.muted);
