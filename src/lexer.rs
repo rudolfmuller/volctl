@@ -1,5 +1,5 @@
 #[derive(Debug)]
-pub enum Token {
+pub(crate) enum Token {
     Muted,
     FloatValue(f32),
 }
