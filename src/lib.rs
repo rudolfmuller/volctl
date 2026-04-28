@@ -1,8 +1,9 @@
-mod error;
 mod lexer;
-mod math;
-mod pipewire_audio;
-mod pulse_audio;
+
+pub mod error;
+pub mod math;
+pub mod pipewire_audio;
+pub mod pulse_audio;
 
 use std::borrow::Cow;
 
