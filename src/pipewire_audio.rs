@@ -1,6 +1,9 @@
 use crate::error::AudioError;
 use crate::lexer::{Token, lex};
-use crate::{AudioTarget, Volume, VolumeState};
+use crate::{
+    audio_target::AudioTarget,
+    volume::{Volume, VolumeState},
+};
 use std::process::Command;
 
 const WPCTL_BIN: &'static str = "wpctl";
@@ -37,7 +40,7 @@ impl PipewireAudio {
 
         Some(VolumeState { volume, muted })
     }
-    pub fn set_volume(&self, volume: f32) -> Result<(), AudioError> {
+    pub fn set_volume(&self, volume: Volume) -> Result<(), AudioError> {
         let output = Command::new(WPCTL_BIN)
             .args(["set-volume", &self.target.as_wpctl(), &volume.to_string()])
             .output()
