@@ -1,7 +1,6 @@
-use crate::AudioTarget;
-use crate::VolumeState;
 use crate::error::AudioError;
 use crate::lexer::{Token, lex};
+use crate::{AudioTarget, Volume, VolumeState};
 use std::process::Command;
 
 const WPCTL_BIN: &'static str = "wpctl";
@@ -27,9 +26,9 @@ impl PipewireAudio {
             .ok()?;
         let utf8_lossy = String::from_utf8_lossy(&output.stdout);
         let tokens = lex(&utf8_lossy);
-        let volume: f32 = match tokens.get(0) {
-            Some(Token::FloatValue(v)) => *v,
-            _ => 0.0,
+        let volume: Volume = match tokens.get(0) {
+            Some(Token::FloatValue(v)) => Volume(*v),
+            _ => Volume(0.0),
         };
         let muted = match tokens.get(1) {
             Some(Token::Muted) => true,
