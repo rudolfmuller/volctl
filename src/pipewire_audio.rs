@@ -28,7 +28,7 @@ impl PipewireAudio {
         self
     }
 
-    pub fn access_stat(&self) -> Result<VolumeState, AudioError> {
+    pub fn access_state(&self) -> Result<VolumeState, AudioError> {
         let output = Command::new(&*self.bin)
             .args(["get-volume", &self.target.as_wpctl()])
             .output()
@@ -49,6 +49,10 @@ impl PipewireAudio {
 
         Ok(VolumeState { volume, muted })
     }
+    pub fn fetch_state(&self) -> Option<VolumeState> {
+        self.access_state().ok()
+    }
+
     pub fn set_volume(&self, volume: Volume) -> Result<(), AudioError> {
         let output = Command::new(&*self.bin)
             .args(["set-volume", &self.target.as_wpctl(), &volume.to_string()])
