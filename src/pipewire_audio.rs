@@ -28,13 +28,16 @@ impl PipewireAudio {
         self
     }
 
-    pub fn get_stat(&self) -> Option<VolumeState> {
+    pub fn access_stat(&self) -> Result<VolumeState, AudioError> {
         let output = Command::new(&*self.bin)
             .args(["get-volume", &self.target.as_wpctl()])
             .output()
-            .ok()?;
-        let utf8_lossy = String::from_utf8_lossy(&output.stdout);
-        let tokens = lex(&utf8_lossy);
+            .map_err(|err| AudioError::Execute {
+                program: self.bin.to_string(),
+                err,
+            })?;
+        let utf8 = String::from_utf8(output.stdout).map_err(AudioError::InvalidUtf8)?;
+        let tokens = lex(&utf8);
         let volume: Volume = match tokens.get(0) {
             Some(Token::FloatValue(v)) => Volume(*v),
             _ => Volume(0.0),
@@ -44,7 +47,7 @@ impl PipewireAudio {
             _ => false,
         };
 
-        Some(VolumeState { volume, muted })
+        Ok(VolumeState { volume, muted })
     }
     pub fn set_volume(&self, volume: Volume) -> Result<(), AudioError> {
         let output = Command::new(&*self.bin)

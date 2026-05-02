@@ -1,4 +1,6 @@
+use std::io::Error;
 use std::process::ExitStatus;
+use std::string::FromUtf8Error;
 
 #[derive(thiserror::Error, Debug)]
 pub enum AudioError {
@@ -6,9 +8,12 @@ pub enum AudioError {
     Execute {
         program: String,
         #[source]
-        err: std::io::Error,
+        err: Error,
     },
 
     #[error("{program} failed with status code: {ec:?}")]
     Exit { program: String, ec: ExitStatus },
+
+    #[error("invalid UTF-8")]
+    InvalidUtf8(#[from] FromUtf8Error),
 }
