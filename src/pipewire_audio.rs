@@ -9,7 +9,7 @@ use std::process::Command;
 
 #[derive(Debug, Clone)]
 pub struct PipewireAudio {
-    pub target: AudioTarget,
+    target: AudioTarget,
     bin: Cow<'static, str>,
 }
 impl PipewireAudio {
