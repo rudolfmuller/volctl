@@ -3,6 +3,14 @@ pub struct VolumeState {
     pub volume: Volume,
     pub muted: bool,
 }
+impl Default for VolumeState {
+    fn default() -> Self {
+        Self {
+            volume: Volume(0.0),
+            muted: false,
+        }
+    }
+}
 
 #[derive(Debug)]
 pub struct Volume(pub f32);
