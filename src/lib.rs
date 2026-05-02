@@ -21,9 +21,11 @@ mod tests {
             .with_target(AudioTarget::Default)
             .with_bin("/usr/bin/wpctl");
         audio.set_volume(Volume(40.0).from_percent())?;
-        if let Some(v) = audio.fetch_state() {
-            println!("volume: {} muted: {}", v.volume.to_percent(), v.muted);
-        }
+        let volume = audio.state().volume.to_percent();
+        let muted = audio.state().muted;
+
+        println!("volume: {} muted: {}", volume, muted);
+
         Ok(())
     }
 }

@@ -52,6 +52,12 @@ impl PipewireAudio {
     pub fn fetch_state(&self) -> Option<VolumeState> {
         self.access_state().ok()
     }
+    pub fn state(&self) -> VolumeState {
+        self.fetch_state().unwrap_or(VolumeState {
+            volume: Volume(0.0),
+            muted: false,
+        })
+    }
 
     pub fn set_volume(&self, volume: Volume) -> Result<(), AudioError> {
         let output = Command::new(&*self.bin)
