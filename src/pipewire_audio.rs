@@ -55,10 +55,9 @@ impl PipewireAudio {
                 err,
             })?;
         if !output.status.success() {
-            let ec = output.status.code();
             return Err(AudioError::Exit {
                 program: self.bin.to_string(),
-                ec,
+                ec: output.status,
             });
         }
         Ok(())
@@ -77,10 +76,9 @@ impl PipewireAudio {
                 err,
             })?;
         if !output.status.success() {
-            let ec = output.status.code();
             return Err(AudioError::Exit {
                 program: self.bin.to_string(),
-                ec,
+                ec: output.status,
             });
         }
         Ok(())

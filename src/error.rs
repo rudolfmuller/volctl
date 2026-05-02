@@ -1,3 +1,5 @@
+use std::process::ExitStatus;
+
 #[derive(thiserror::Error, Debug)]
 pub enum AudioError {
     #[error("failed to execute {program}: {err}")]
@@ -8,5 +10,5 @@ pub enum AudioError {
     },
 
     #[error("{program} failed with status code: {ec:?}")]
-    Exit { program: String, ec: Option<i32> },
+    Exit { program: String, ec: ExitStatus },
 }
