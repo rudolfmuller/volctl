@@ -28,7 +28,7 @@ impl PipewireAudio {
         self
     }
 
-    pub fn get_volume(&self) -> Option<VolumeState> {
+    pub fn get_stat(&self) -> Option<VolumeState> {
         let output = Command::new(&*self.bin)
             .args(["get-volume", &self.target.as_wpctl()])
             .output()
