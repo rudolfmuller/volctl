@@ -18,13 +18,13 @@ impl Default for VolumeState {
 pub struct Volume(pub f32);
 
 impl Volume {
+    /// Convert percents to numbers and return self
+    pub fn from_percent(percent: f32) -> Self {
+        Self(percent / 100.0)
+    }
     /// Convert numbers to percents and return self
     pub fn to_percent(&self) -> Self {
         Self(self.0 * 100.0)
-    }
-    /// Convert percents to numbers and return self
-    pub fn from_percent(&self) -> Self {
-        Self(self.0 / 100.0)
     }
     /// Return the value of `Volume` as `f32`
     pub fn as_f32(&self) -> f32 {

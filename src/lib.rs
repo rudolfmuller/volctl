@@ -20,7 +20,7 @@ mod tests {
         let audio = PipewireAudio::default()
             .with_sink(AudioSink::Default)
             .with_bin("/usr/bin/wpctl");
-        audio.set_volume(Volume(40.0).from_percent())?;
+        audio.set_volume(Volume::from_percent(40.0))?;
 
         let state = audio.state_lossy();
         let volume = state.volume.to_percent();
