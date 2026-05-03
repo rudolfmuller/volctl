@@ -21,8 +21,10 @@ mod tests {
             .with_sink(AudioSink::Default)
             .with_bin("/usr/bin/wpctl");
         audio.set_volume(Volume(40.0).from_percent())?;
-        let volume = audio.state().volume.to_percent();
-        let muted = audio.state().muted;
+
+        let state = audio.state_lossy();
+        let volume = state.volume.to_percent();
+        let muted = state.muted;
 
         println!("volume: {} muted: {}", volume, muted);
 

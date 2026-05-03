@@ -13,21 +13,24 @@ pub struct PipewireAudio {
     bin: Cow<'static, str>,
 }
 impl PipewireAudio {
+    /// Creates new `PipewireAudio`
     pub fn new() -> Self {
         Self {
             sink: AudioSink::Default,
             bin: "wpctl".into(),
         }
     }
+    /// Set audio sink; or `AudioSink::Default`
     pub fn with_sink(mut self, target: AudioSink) -> Self {
         self.sink = target;
         self
     }
+    /// Set binary backend`wpctl` path; or `wpctl`
     pub fn with_bin(mut self, bin: impl Into<Cow<'static, str>>) -> Self {
         self.bin = bin.into();
         self
     }
-
+    /// Access to state, or return `Err(AudioError)`
     pub fn access_state(&self) -> Result<VolumeState, AudioError> {
         let output = Command::new(&*self.bin)
             .args(["get-volume", &self.sink.as_wpctl()])
@@ -49,10 +52,12 @@ impl PipewireAudio {
 
         Ok(VolumeState { volume, muted })
     }
+    /// Try to access state
     pub fn fetch_state(&self) -> Option<VolumeState> {
         self.access_state().ok()
     }
-    pub fn state(&self) -> VolumeState {
+    /// Fetch state, or return `VolumeState::default()`
+    pub fn state_lossy(&self) -> VolumeState {
         self.fetch_state().unwrap_or_default()
     }
 
