@@ -1,7 +1,7 @@
 use crate::error::AudioError;
 use crate::lexer::{Token, lex};
 use crate::{
-    audio_target::AudioTarget,
+    audio_sink::AudioSink,
     volume::{Volume, VolumeState},
 };
 use std::borrow::Cow;
@@ -9,18 +9,18 @@ use std::process::Command;
 
 #[derive(Debug, Clone)]
 pub struct PipewireAudio {
-    target: AudioTarget,
+    sink: AudioSink,
     bin: Cow<'static, str>,
 }
 impl PipewireAudio {
     pub fn new() -> Self {
         Self {
-            target: AudioTarget::Default,
+            sink: AudioSink::Default,
             bin: "wpctl".into(),
         }
     }
-    pub fn with_target(mut self, target: AudioTarget) -> Self {
-        self.target = target;
+    pub fn with_sink(mut self, target: AudioSink) -> Self {
+        self.sink = target;
         self
     }
     pub fn with_bin(mut self, bin: impl Into<Cow<'static, str>>) -> Self {
@@ -30,7 +30,7 @@ impl PipewireAudio {
 
     pub fn access_state(&self) -> Result<VolumeState, AudioError> {
         let output = Command::new(&*self.bin)
-            .args(["get-volume", &self.target.as_wpctl()])
+            .args(["get-volume", &self.sink.as_wpctl()])
             .output()
             .map_err(|err| AudioError::Execute {
                 program: self.bin.to_string(),
@@ -58,7 +58,7 @@ impl PipewireAudio {
 
     pub fn set_volume(&self, volume: Volume) -> Result<(), AudioError> {
         let output = Command::new(&*self.bin)
-            .args(["set-volume", &self.target.as_wpctl(), &volume.to_string()])
+            .args(["set-volume", &self.sink.as_wpctl(), &volume.to_string()])
             .output()
             .map_err(|err| AudioError::Execute {
                 program: self.bin.to_string(),
@@ -77,7 +77,7 @@ impl PipewireAudio {
         let output = Command::new(&*self.bin)
             .args([
                 "set-mute",
-                &self.target.as_wpctl(),
+                &self.sink.as_wpctl(),
                 if mute { "1" } else { "0" },
             ])
             .output()
