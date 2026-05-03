@@ -17,7 +17,7 @@ mod tests {
 
     #[test]
     fn it_works() -> Result<(), AudioError> {
-        let audio = PipewireAudio::new()
+        let audio = PipewireAudio::default()
             .with_sink(AudioSink::Default)
             .with_bin("/usr/bin/wpctl");
         audio.set_volume(Volume(40.0).from_percent())?;

@@ -13,12 +13,9 @@ pub struct PipewireAudio {
     bin: Cow<'static, str>,
 }
 impl PipewireAudio {
-    /// Creates new `PipewireAudio`
+    /// Creates new `PipewireAudio`; but instead you can use `PipewireAudio::default()`
     pub fn new() -> Self {
-        Self {
-            sink: AudioSink::Default,
-            bin: "wpctl".into(),
-        }
+        Self::default()
     }
     /// Set audio sink; or `AudioSink::Default`
     pub fn with_sink(mut self, target: AudioSink) -> Self {
@@ -97,5 +94,13 @@ impl PipewireAudio {
             });
         }
         Ok(())
+    }
+}
+impl Default for PipewireAudio {
+    fn default() -> Self {
+        Self {
+            sink: AudioSink::Default,
+            bin: "wpctl".into(),
+        }
     }
 }
