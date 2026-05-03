@@ -1,3 +1,4 @@
+/// Stores volume state
 #[derive(Debug)]
 pub struct VolumeState {
     pub volume: Volume,
@@ -12,16 +13,22 @@ impl Default for VolumeState {
     }
 }
 
+/// `f32` with more functions
 #[derive(Debug)]
 pub struct Volume(pub f32);
 
 impl Volume {
-    pub fn to_percent(&self) -> f32 {
-        self.0 * 100.0
+    /// Convert numbers to percents and return self
+    pub fn to_percent(&self) -> Self {
+        Self(self.0 * 100.0)
     }
+    /// Convert percents to numbers and return self
     pub fn from_percent(&self) -> Self {
-        let value = self.0;
-        Self(value / 100.0)
+        Self(self.0 / 100.0)
+    }
+    /// Return the value of `Volume` as `f32`
+    pub fn as_f32(&self) -> f32 {
+        self.0
     }
 }
 impl std::fmt::Display for Volume {
