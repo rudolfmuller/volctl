@@ -23,7 +23,7 @@ mod tests {
             .with_sink(AudioSink::Default)
             .with_bin("/usr/bin/wpctl");
 
-        let audio_state = pw_audio.fetch_state().unwrap_or(VolumeState::default());
+        let audio_state = pw_audio.get_state().unwrap_or_default();
         eprintln!(
             "volume: {}% muted: {}",
             audio_state.volume.to_percent(),
@@ -50,6 +50,18 @@ mod tests {
             .with_bin("/usr/bin/wpctl");
 
         pw_audio.set_mute(true)?;
+        Ok(())
+    }
+    #[test]
+    fn test_pw_set_state() -> Result<(), AudioError> {
+        let pw_audio = PipewireAudio::default()
+            .with_sink(AudioSink::Default)
+            .with_bin("/usr/bin/wpctl");
+
+        pw_audio.set_state(VolumeState {
+            volume: Volume::from_percent(40.0),
+            muted: false,
+        })?;
         Ok(())
     }
 }

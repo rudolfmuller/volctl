@@ -50,12 +50,14 @@ impl PipewireAudio {
         Ok(VolumeState { volume, muted })
     }
     /// Try to access state
-    pub fn fetch_state(&self) -> Option<VolumeState> {
+    pub fn get_state(&self) -> Option<VolumeState> {
         self.access_state().ok()
     }
-    /// Fetch state, or return `VolumeState::default()`
-    pub fn state_lossy(&self) -> VolumeState {
-        self.fetch_state().unwrap_or_default()
+    /// Set volume state by `state: VolumeState`
+    pub fn set_state(&self, state: VolumeState) -> Result<(), AudioError> {
+        self.set_volume(state.volume)?;
+        self.set_mute(state.muted)?;
+        Ok(())
     }
 
     pub fn set_volume(&self, volume: Volume) -> Result<(), AudioError> {
