@@ -1,4 +1,4 @@
-use crate::error::AudioError;
+use crate::error::{AudioError, ParseError};
 use crate::lexer::{Token, lex};
 use crate::{
     audio_sink::AudioSink,
@@ -40,13 +40,26 @@ impl PipewireAudio {
         let tokens = lex(&utf8);
         let volume: Volume = match tokens.get(0) {
             Some(Token::FloatValue(v)) => Volume(*v),
-            _ => Volume(0.0),
+            Some(t) => {
+                return Err(ParseError::UnexpectedToken {
+                    expected: Token::FloatValue(0.0),
+                    unexpected: t.clone(),
+                })?;
+            }
+            None => {
+                return Err(ParseError::TokenNotFound(Token::FloatValue(0.0)))?;
+            }
         };
         let muted = match tokens.get(1) {
             Some(Token::Muted) => true,
-            _ => false,
+            Some(t) => {
+                return Err(ParseError::UnexpectedToken {
+                    expected: Token::Muted,
+                    unexpected: t.clone(),
+                })?;
+            }
+            None => false,
         };
-
         Ok(VolumeState { volume, muted })
     }
     /// Try to access state

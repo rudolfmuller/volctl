@@ -23,7 +23,7 @@ mod tests {
             .with_sink(AudioSink::Default)
             .with_bin("/usr/bin/wpctl");
 
-        let audio_state = pw_audio.get_state().unwrap_or_default();
+        let audio_state = pw_audio.access_state()?;
         eprintln!(
             "volume: {}% muted: {}",
             audio_state.volume.to_percent(),
