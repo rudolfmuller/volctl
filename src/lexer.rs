@@ -1,5 +1,5 @@
-#[derive(Debug)]
-pub(crate) enum Token {
+#[derive(Debug, Clone)]
+pub enum Token {
     Muted,
     FloatValue(f32),
 }
